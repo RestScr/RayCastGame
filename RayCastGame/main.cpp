@@ -6,9 +6,10 @@
 
 #define MAP_WIDTH 10
 #define MAP_HEIGHT 7
+#define MAP_PADDING_TOP 1
 #define SCREEN_DISTANCE 1
 #define SCREEN_WIDTH 120
-#define SCREEN_HEIGHT 31
+#define SCREEN_HEIGHT 30
 #define MAX_RENDER_DISTANCE 3
 #define WALL_HEIGHT 10
 
@@ -224,9 +225,9 @@ void DrawInterface()
 {
 	for (int x = 0; x < Min(MAP_WIDTH, SCREEN_WIDTH); x++)
 	{
-		for (int y = 0; y < Min(MAP_HEIGHT, SCREEN_HEIGHT); y++)
+		for (int y = MAP_PADDING_TOP; y < Min(MAP_HEIGHT + MAP_PADDING_TOP, SCREEN_HEIGHT); y++)
 		{
-			ScreenImage[y][x] = WorldMap[y][x];
+			ScreenImage[y][x] = WorldMap[y - MAP_PADDING_TOP][x];
 		}
 	}
 }

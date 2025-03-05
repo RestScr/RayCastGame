@@ -96,12 +96,12 @@ void ClearScreen()
 void RenderFloor() 
 {
 	double screenBottomHalfHeight = SCREEN_HEIGHT / 2;
-	int gradientLength = Length(GRADIENT_SYMBOLS);
+	int gradientSymbolsLength = Length(GRADIENT_SYMBOLS) - 1;
 	for (int x = 0; x < SCREEN_WIDTH; x++) 
 	{
 		for (int y = SCREEN_HEIGHT / 2; y < SCREEN_HEIGHT; y++) 
 		{
-			ScreenImage[y][x] = GRADIENT_SYMBOLS[(int)((y / screenBottomHalfHeight - 1) * gradientLength)];
+			ScreenImage[y][x] = GRADIENT_SYMBOLS[(int)((y / screenBottomHalfHeight - 1) * gradientSymbolsLength)];
 		}
 	}
 }
@@ -164,7 +164,7 @@ bool CheckIfDotOnTheMap(double x, double y)
 void RenderWalls() 
 {
 	double minAngle = PlayerAngle - PlayerFOV / 2;
-	int gradientSymbolsLength = Length(GRADIENT_SYMBOLS);
+	int gradientSymbolsLength = Length(GRADIENT_SYMBOLS) - 1;
 	for (int i = 0; i < SCREEN_WIDTH; i++) 
 	{
 		double angle = (minAngle + DELTA_ALPHA * i) / 180 * PI;
@@ -183,6 +183,11 @@ void RenderWalls()
 		{
 			int projectedWallHeight = (SCREEN_DISTANCE * WALL_HEIGHT / r);
 			for (int j = SCREEN_HEIGHT / 2; j > max(-1, SCREEN_HEIGHT / 2 - projectedWallHeight); j--)
+			{
+				ScreenImage[j][i] = GRADIENT_SYMBOLS[(int)(min(1, SCREEN_DISTANCE / r) * gradientSymbolsLength)];
+			}
+
+			for (int j = SCREEN_HEIGHT / 2; j < min(SCREEN_HEIGHT, SCREEN_HEIGHT / 2 + projectedWallHeight); j++)
 			{
 				ScreenImage[j][i] = GRADIENT_SYMBOLS[(int)(min(1, SCREEN_DISTANCE / r) * gradientSymbolsLength)];
 			}
@@ -299,7 +304,8 @@ void HandleKeyPress()
 			MovePlayerFront();
 		}
 	}
-	else if (GetKeyState(VK_LEFT) & 0x8000)
+	
+	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		RotatePlayer(-PLAYER_ROTATION);
 	}
